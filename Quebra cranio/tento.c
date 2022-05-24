@@ -7,16 +7,41 @@ int main()
 	DDRB = 0xFF; //PORTB como saída
 	inic_LCD_4bits(); //inicializa o LCD
 	
+	//Imagem em linhas 1 e 2
+	
 	char vet1[]={0xEF, 0xA5, 0xA5, 0xA5, 0xFF, 0xFF, 0xFF,0xFF, 0xA5, 0xA5, 0xFC, 0xA5, 0xA5, 0xFF, 0xFF, 0xFF};
 	char vet2[]={0xFF, 0xFF, 0xFF, 0xA5, 0xA5, 0xA5, 0xA5, 0xFC, 0xA5, 0xFF, 0xFF, 0xFF, 0xA5, 0xA5, 0xA5, 0x2A};
-		
-		cmd_LCD(0x80,0);
-		escreve_LCD(vet1);
-		cmd_LCD(0xC0,0);
-		escreve_LCD(vet2);
 	
+	// Mensagem inicial
+	 
+	cmd_LCD(0x83,0);
+	escreve_LCD("PREPARE-SE");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	
+	cmd_LCD(0x87,0);
+	escreve_LCD("3");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	cmd_LCD(0x87,0);
+	escreve_LCD("2");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	cmd_LCD(0x87,0);
+	escreve_LCD("1");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	
+	//Apresenta Imagem
+	
+	cmd_LCD(0x80,0);
+	escreve_LCD(vet1);
+	cmd_LCD(0xC0,0);
+	escreve_LCD(vet2);
 	_delay_ms(2500);
 	cmd_LCD(0x01,0);
+	
+	//Tela de Loading (estetico)
 	cmd_LCD(0x83,0);
 	escreve_LCD("CARREGANDO");
 	
