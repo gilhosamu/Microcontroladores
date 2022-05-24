@@ -1,0 +1,140 @@
+#include "def_principais.h"
+#include "LCD.h"
+
+int main() {
+
+	int k = 0;
+	int j = 0;
+	int i;
+
+	char b[] = {};
+	
+	DDRD = 0xFF;
+	DDRB = 0xFF;
+	PORTB = 0x00;
+	DDRC = 0x00;
+	PORTC = 0xFF;
+	 
+	 set_bit(PORTB, 2);
+	inic_LCD_4bits(); //inicializa o LCD
+	
+	//Imagem em linhas 1 e 2
+	
+	char vet1[]={0xEF, 0xA5, 0xA5, 0xA5, 0xFF, 0xFF, 0xFF,0xFF, 0xA5, 0xA5, 0xFC, 0xA5, 0xA5, 0xFF, 0xFF, 0xFF};
+	char vet2[]={0xFF, 0xFF, 0xFF, 0xA5, 0xA5, 0xA5, 0xA5, 0xFC, 0xA5, 0xFF, 0xFF, 0xFF, 0xA5, 0xA5, 0xA5, 0x2A};
+	
+	// Mensagem inicial
+	
+	cmd_LCD(0x83,0);
+	escreve_LCD("PREPARE-SE");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	
+	cmd_LCD(0x87,0);
+	escreve_LCD("3");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	cmd_LCD(0x87,0);
+	escreve_LCD("2");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	cmd_LCD(0x87,0);
+	escreve_LCD("1");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	
+	//Apresenta Imagem
+	
+	cmd_LCD(0x80,0);
+	escreve_LCD(vet1);
+	cmd_LCD(0xC0,0);
+	escreve_LCD(vet2);
+	_delay_ms(2500);
+	cmd_LCD(0x01,0);
+	
+	//Tela de Loading (estetico)
+	cmd_LCD(0x83,0);
+	escreve_LCD("CARREGANDO");
+	
+	int i;
+	
+	for(i=0; i<=15;i++){
+		cmd_LCD(0xC0+i,0);
+		cmd_LCD(0xFF,1);
+		_delay_ms(250);
+	}
+	
+	_delay_ms(200);
+	cmd_LCD(0x01,0);
+	_delay_ms(150);
+	
+	char aux1[]={0xFF, 0xA5, 0xFC, 0xA5, 0xFF, 0xFF, 0xFF, 0xEF, 0xFF, 0xA5, 0xA5, 0xA5, 0xFF, 0xA5, 0xA5, 0xFF};
+	char aux2[]={0xFF, 0x2A, 0xA5, 0xA5, 0xFF, 0xA5, 0xFF, 0xFC, 0xA5, 0xA5, 0xFF, 0xA5, 0xFF, 0xFF, 0xA5, 0xA5};
+	
+	cmd_LCD(0x80,0);
+	escreve_LCD(aux1);
+	cmd_LCD(0xC0,0);
+	escreve_LCD(aux2);
+	
+	 
+	 while (1){
+		 
+		 if (!tst_bit(PINC, 0)){
+			 while(!tst_bit(PINC, 0));
+			 _delay_ms(20);
+			 k++;
+			 if (k > 5){
+				 k = 0;
+			 }
+		 }
+		 
+		 if(j==0){
+			 if(!tst_bit(PINC, 1)){
+				 while(!tst_bit(PINC, 0));
+				 _delay_ms(20);
+				 i = k;
+				 j++;
+			 }
+		 }
+		 
+		 if(j==1){
+			 if(!tst_bit(PINC, 1)){
+				 while(!tst_bit(PINC, 0));
+				 _delay_ms(20);
+				 
+				 char t;
+				 t = pos_f[i];
+				 pos_f[i] = pos_f[k];
+				 pos_f[k] = t;
+
+				 set_cursor(pos_f[2]);
+				 desenha_LCD(0x00);
+				 
+				 set_cursor(pos_f[1]);
+				 desenha_LCD(0b00111101);
+				 
+				 set_cursor(pos_f[0]);
+				 desenha_LCD(0b00101101);
+				 
+				 set_cursor(pos_f[3]);
+				 desenha_LCD(0x09);
+				 
+				 set_cursor(pos_f[4]);
+				 desenha_LCD(0b00111101);
+				 
+				 set_cursor(pos_f[5]);
+				 desenha_LCD(0b00101101);
+
+				 j = 0;
+				 
+				 
+			 }
+		 }
+
+		 set_cursor(pos[k]);
+		 cmd_LCD(0x0F, 0);
+
+	 }
+ }
+
+}
