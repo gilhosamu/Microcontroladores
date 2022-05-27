@@ -162,13 +162,13 @@ int main(void)
 		{
 			
 			if(c==0){
-				a=desenho[1];
+				a=imagem[1];
 				b=1;
 				c++;
 			}
 			else
 			{
-				desenho[b] = imagem[1];
+				imagem[b] = imagem[1];
 				imagem[1]= a;
 				
 				b=0;
