@@ -6,62 +6,60 @@
  
 int main(void)
 {
-	unsigned char desenho_n[4] = {1, 2, 3, 4};
-	unsigned char desenho[4] = {1, 2, 3, 4};
-		unsigned char x = 0;
-		unsigned char y = 0;
-		unsigned char z =0;
-		unsigned char jogadas = 0;
+	unsigned char imagem_n[4] = {1, 2, 3, 4};
+	unsigned char imagem[4] = {1, 2, 3, 4};
+		unsigned char a = 0;
+		unsigned char b = 0;
+		unsigned char c =0;
+		unsigned char tentativas = 0;
 		
 		
 	
-	unsigned char c1[8] = {
+	unsigned char i1[8] = {
 		0b00000000,
-		0b00000000,
-		0b00000000,
-		0b00000011,
-		0b00000100,
-		0b00001000,
-		0b00010000,
-		0b00010000
+		0b00011001,
+		0b00010011,
+		0b00000111,
+		0b00001110,
+		0b00011100,
+		0b00011001,
+		0b00010011
 	};
 	
-	unsigned char c3[8] = {
-		0b00010000,
-		0b00010000,
-		0b00001000,
-		0b00000100,
-		0b00000011,
-		0b00000000,
-		0b00000000,
+	unsigned char i3[8] = {
+		0b00010011,
+		0b00011001,
+		0b00011100,
+		0b00001110,
+		0b00000111,
+		0b00010011,
+		0b00011001,
 		0b00000000
 	};
 	
-	unsigned char c4[8] = {
-		0b00000001,
-		0b00000001,
-		0b00000010,
-		0b00000100,
-		0b00011000,
-		0b00000000,
-		0b00000000,
+	unsigned char i4[8] = {
+		0b00011001,
+		0b00010011,
+		0b00000111,
+		0b00001110,
+		0b00011100,
+		0b00011001,
+		0b00010011,
 		0b00000000
 	};
 	
 	
-	unsigned char c2[8] = {
+	unsigned char i2[8] = {
 		0b00000000,
-		0b00000000,
-		0b00000000,
-		0b00011000,
-		0b00000100,
-		0b00000010,
-		0b00000001,
-		0b00000001
+		0b00010011,
+		0b00011001,
+		0b00011100,
+		0b00001110,
+		0b00000111,
+		0b00010011,
+		0b00011001
 	};
 	
-	
-    unsigned char k;
 	
 	DDRD = 0xFF;
 	DDRB = 0b00000011;
@@ -69,110 +67,132 @@ int main(void)
 	
 	inic_LCD_4bits();
 	
+	cmd_LCD(0x83,0);
+	escreve_LCD("PREPARE-SE");
+	_delay_ms(1000);
+	cmd_LCD(0x01,0);
+	
+	cmd_LCD(0x83,0);
+	escreve_LCD("CARREGANDO");
+	
+	int x;
+	
+	for(x=0; x<=15;x++){
+		cmd_LCD(0xC0+x,0);
+		cmd_LCD(0xFF,1);
+		_delay_ms(250);
+		}
+		
+	_delay_ms(200);
+	cmd_LCD(0x01,0);
+	_delay_ms(150);
+	
 	cmd_LCD(0x48,0);
 	for(k=0;k<8;k++)
-		cmd_LCD(c1[k], 1);
+		cmd_LCD(i1[k], 1);
 	cmd_LCD(0x00,1);
+	
+	unsigned char k;
 	
 	cmd_LCD(0x50,0);
 	for(k=0;k<8;k++)
-	cmd_LCD(c2[k], 1);
+	cmd_LCD(i2[k], 1);
 	cmd_LCD(0x00,1);
 	
 	cmd_LCD(0x58,0);
 	for(k=0;k<8;k++)
-	cmd_LCD(c3[k], 1);
+	cmd_LCD(i3[k], 1);
 	cmd_LCD(0x00,1);
 	
 	cmd_LCD(0x60,0);
 	for(k=0;k<8;k++)
-	cmd_LCD(c4[k], 1);
+	cmd_LCD(i4[k], 1);
 	cmd_LCD(0x00,1);
 	
 	
 	cmd_LCD(0x80,0);
-	cmd_LCD(desenho[0],1);
-	cmd_LCD(desenho[1],1);
+	cmd_LCD(imagem[0],1);
+	cmd_LCD(imagem[1],1);
 	cmd_LCD(0xC0,0);
-	cmd_LCD(desenho[2],1);
-	cmd_LCD(desenho[3],1);
+	cmd_LCD(imagem[2],1);
+	cmd_LCD(imagem[3],1);
 	
 	
 
-	_delay_ms(5000); //tempo para a troca de valor
+	_delay_ms(5000);
 
 		
 	for (k = 0; k < 4; k++)
 	{
 		unsigned char j = k + rand() / (RAND_MAX / (4 - k) + 1);
-		unsigned char t = desenho[j];
-		desenho[j] = desenho[k];
-		desenho[k] = t;
+		unsigned char t = imagem[j];
+		imagem[j] = imagem[k];
+		imagem[k] = t;
 	}
 	
 	cmd_LCD(0x80,0);
-	cmd_LCD(desenho[0],1);
-	cmd_LCD(desenho[1],1);
+	cmd_LCD(imagem[0],1);
+	cmd_LCD(imagem[1],1);
 	cmd_LCD(0xC0,0);
-	cmd_LCD(desenho[2],1);
-	cmd_LCD(desenho[3],1);
+	cmd_LCD(imagem[2],1);
+	cmd_LCD(imagem[3],1);
 	
 	while(1){
 		
 		if (!tst_bit(PINB, PB2))
 		{
 			
-			if(z==0){
-				x=desenho[0];
-				y=0;
-				z++;
+			if(c==0){
+				a=imagem[0];
+				b=0;
+				c++;
 			}
 			else
 			{
-				desenho[y] = desenho[0];
-				desenho[0]= x;
+				imagem[b] = imagem[0];
+				imagem[0]= a;
 				
-				y=0;
-				x=0;
-				z++;
+				b=0;
+				a=0;
+				c++;
 			}
 			while(!tst_bit(PINB, PB2));
 		}
 		if (!tst_bit(PINB, PB3))
 		{
 			
-			if(z==0){
-				x=desenho[1];
-				y=1;
-				z++;
+			if(c==0){
+				a=desenho[1];
+				b=1;
+				c++;
 			}
 			else
 			{
-				desenho[y] = desenho[1];
-				desenho[1]= x;
+				desenho[b] = imagem[1];
+				imagem[1]= a;
 				
-				y=0;
-				x=0;
-				z++;
+				b=0;
+				a=0;
+				c++;
 			}
 			while(!tst_bit(PINB, PB3));
 		}
 		if (!tst_bit(PINB, PB4))
 		{
 			
-			if(z==0){
-				x=desenho[2];
-				y=2;
-				z++;
+			if(c==0){
+				a=imagem[2];
+				b=2;
+				c++;
 			}
 			else
 			{
 				
-				desenho[y] = desenho[2];
-				desenho[2]= x;
-				y=0;
-				x=0;
-				z++;
+				imagem[b] = imagem[2];
+				imagem[2]= a;
+				b=0;
+				a=0;
+				c++;
 			}
 			while(!tst_bit(PINB, PB4));
 			
@@ -180,56 +200,60 @@ int main(void)
 		if (!tst_bit(PINB, PB5))
 		{
 
-			if(z==0){
-				x=desenho[3];
-				y=3;
-				z++;	
+			if(c==0){
+				a=imagem[3];
+				b=3;
+				c++;	
 			}
 			else
 			{
-				desenho[y] = desenho[0];
-				desenho[3]= x;
+				imagem[b] = imagem[0];
+				imagem[3]= a;
 				
-				y=0;
-				x=0;
-				z++;
+				b=0;
+				a=0;
+				c++;
 			}
 			while(!tst_bit(PINB, PB5));
 		}
-		if (z==2){
+		if (c==2){
 			
 			cmd_LCD(0x80,0);
-			cmd_LCD(desenho[0],1);
-			cmd_LCD(desenho[1],1);
+			cmd_LCD(imagem[0],1);
+			cmd_LCD(imagem[1],1);
 			cmd_LCD(0xC0,0);
-			cmd_LCD(desenho[2],1);
-			cmd_LCD(desenho[3],1);
+			cmd_LCD(imagem[2],1);
+			cmd_LCD(imagem[3],1);
 			
 			_delay_ms(100);
 			
-			z=0;
-			jogadas++;
+			c=0;
+			tentativas++;
 		}
 		
 		
-		int ganhou = 1;
+		int vitoria = 1;
 		for (int i = 0; i < 4; i++) {
-			if (desenho[i] != desenho_n[i]) {
-				ganhou = 0;
+			if (imagem[i] != imagem_n[i]) {
+				vitoria = 0;
 				break;
 			}
 		}
-		if (ganhou == 1) {
+		if (vitoria == 1) {
 			cmd_LCD(1,0);
 			cmd_LCD(0x80,0);
-			escreve_LCD("Boa ganho");
+			escreve_LCD("Parabens");
+			cmd_LCD(0xC0,0);
+			escreve_LCD("Voce Venceu");
 			while(1);
 		}
 		
-		if (jogadas >= 3) {
+		if (tentativas >= 3) {
 			cmd_LCD(1,0);
 			cmd_LCD(0x80,0);
-			escreve_LCD("Perdeste");
+			escreve_LCD("Voce Perdeu");
+			cmd_LCD(0xC0,0);
+			escreve_LCD("Tente novamente");
 			while(1);
 		}
 		
